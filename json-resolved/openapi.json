@@ -1,0 +1,647 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "zPages",
+    "description" : "zPages API",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/damian.janiszewski/zPages/1.0.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "paths" : {
+    "/healthz" : {
+      "get" : {
+        "tags" : [ "Healthcheck Probes" ],
+        "description" : "Health status of the service and all upstream services",
+        "operationId" : "zPagesGetHealthz",
+        "responses" : {
+          "200" : {
+            "description" : "Both the service and all upstream services are ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "ok",
+                  "upstreamServices" : [ {
+                    "id" : "0729a580-2240-11e6-9eb5-0002a5d5c51b",
+                    "name" : "data-service",
+                    "type" : "platform",
+                    "status" : "ok",
+                    "updated" : "2019-07-18T17:32:28-02:00",
+                    "uri" : "http://data-store.smpaas-platform-svcs.svc.cluster.local:8080"
+                  }, {
+                    "id" : "823b87c4-5888-4d7c-b035-ede53e9ab543",
+                    "name" : "middleware",
+                    "type" : "application",
+                    "status" : "ok",
+                    "updated" : "2019-07-18T10:08:40-02:00",
+                    "uri" : "http://middleware.smpaas-applications.svc.cluster.local:8880"
+                  } ]
+                }
+              }
+            }
+          },
+          "203" : {
+            "description" : "The service status is forced ok by executing /support/v1/quit or /support/v1/fail",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "ok-forced"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Both the service and any of upstream services status is failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "failed"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "The service status is ok and any of upstream services status is failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "failed"
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "The service status is failed and all upstream services are ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/readyz" : {
+      "get" : {
+        "tags" : [ "Healthcheck Probes" ],
+        "description" : "Readiness status of the service and all upstream services",
+        "operationId" : "zPagesGetReadyz",
+        "responses" : {
+          "200" : {
+            "description" : "Both the service status and all upstream services are ready to serve requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "ready",
+                  "upstreamServices" : [ {
+                    "id" : "0729a580-2240-11e6-9eb5-0002a5d5c51b",
+                    "name" : "data-service",
+                    "type" : "platform",
+                    "status" : "ok",
+                    "updated" : "2019-07-18T17:32:28-02:00",
+                    "uri" : "http://data-store.smpaas-platform-svcs.svc.cluster.local:8080"
+                  }, {
+                    "id" : "823b87c4-5888-4d7c-b035-ede53e9ab543",
+                    "name" : "middleware",
+                    "type" : "application",
+                    "status" : "ok",
+                    "updated" : "2019-07-18T10:08:40-02:00",
+                    "uri" : "http://middleware.smpaas-applications.svc.cluster.local:8880"
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Both the service and any of upstream services is not-ready or failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "not-ready"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "The service status is forced not-ready by executing /support/v1/quiesce",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "forced-not-ready"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "The service is ready and any of upstream services is not-ready or failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "not-ready"
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "The service is not-ready and all upstream services are ready",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                },
+                "example" : {
+                  "id" : "1c79c37f-8c91-4676-962d-c9db120d0ec2",
+                  "name" : "frontend",
+                  "type" : "application",
+                  "status" : "not-ready"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics" : {
+      "get" : {
+        "tags" : [ "Metrics" ],
+        "description" : "Performance, health and availability metrics in prometheus format (https://prometheus.io/docs/instrumenting/exposition_formats/)",
+        "operationId" : "zPagesGetMetrics",
+        "responses" : {
+          "200" : {
+            "description" : "Metrics",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "zpages_http_requests_total{method=\"post\",code=\"200\"} 1024 zpages_http_requests_total{method=\"post\",code=\"500\"} 512"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/quiesce" : {
+      "post" : {
+        "tags" : [ "Supporting Endpoints" ],
+        "description" : "Set readiness probe to forced-not-ready (501) regardless of actual computed readiness status",
+        "operationId" : "zPagesSetReadinessQuiesce",
+        "responses" : {
+          "200" : {
+            "description" : "The service readiness is set to not-ready",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Error setting readiness status",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/resume" : {
+      "post" : {
+        "tags" : [ "Supporting Endpoints" ],
+        "description" : "Sets readiness probe to actual computed readiness status",
+        "operationId" : "zPagesSetReadinessResume",
+        "responses" : {
+          "200" : {
+            "description" : "The service readiness is set to actual computed status",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Error setting readiness probe",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/quit" : {
+      "post" : {
+        "tags" : [ "Supporting Endpoints" ],
+        "description" : "Sets readiness probe to forced-not-ready (501), wait to finish all requests and change healthcheck probe to failed (503)",
+        "operationId" : "zPagesSetProbesQuit",
+        "responses" : {
+          "200" : {
+            "description" : "The service quit initiated",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Error setting the service to quit",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/restart" : {
+      "post" : {
+        "tags" : [ "Supporting Endpoints" ],
+        "description" : "Sets readiness probe to forced-not-ready (501), wait to finish all requests, internally restart the service, change readiness probe to actual computed readiness status",
+        "operationId" : "zPagesSetProbesRestart",
+        "responses" : {
+          "200" : {
+            "description" : "The service restart initiated",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Error setting the service to restart",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/fail" : {
+      "post" : {
+        "tags" : [ "Supporting Endpoints" ],
+        "description" : "Sets healthcheck probe to failed (500) regardless of actual computed healthcheck status",
+        "operationId" : "zPagesSetProbesFail",
+        "responses" : {
+          "200" : {
+            "description" : "The service is set to failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServiceStatus"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Error setting the service to fail",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/info" : {
+      "get" : {
+        "tags" : [ "Info" ],
+        "description" : "Consolidated information for the service",
+        "operationId" : "zPagesGetInfo",
+        "responses" : {
+          "200" : {
+            "description" : "Info",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Info"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/version" : {
+      "get" : {
+        "tags" : [ "Info" ],
+        "description" : "Returns version information for all modules and components of the service including all dependencies",
+        "operationId" : "zPagesGetVersion",
+        "responses" : {
+          "200" : {
+            "description" : "Version",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Version"
+                },
+                "example" : {
+                  "module" : "node",
+                  "version" : "v11.12.0",
+                  "dependencies" : [ {
+                    "module" : "libc",
+                    "version" : "v8.11.0"
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/env" : {
+      "get" : {
+        "tags" : [ "Info" ],
+        "description" : "All environment variables of the service",
+        "operationId" : "zPagesGetVars",
+        "responses" : {
+          "200" : {
+            "description" : "Environment variables",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Env"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/v1/icon" : {
+      "get" : {
+        "tags" : [ "Info" ],
+        "description" : "Graphic icon of the service",
+        "operationId" : "zPagesGetIcon",
+        "responses" : {
+          "200" : {
+            "description" : "Icon",
+            "content" : {
+              "image/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ServiceStatus" : {
+        "required" : [ "health", "id", "name", "readiness", "type", "updated" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid",
+            "example" : "0729a580-2240-11e6-9eb5-0002a5d5c51b"
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "data-store"
+          },
+          "type" : {
+            "type" : "object",
+            "description" : "Type of the service.",
+            "example" : "platform",
+            "enum" : [ "infrastructure", "platform", "application", "external" ]
+          },
+          "health" : {
+            "$ref" : "#/components/schemas/HealthStatus"
+          },
+          "readiness" : {
+            "$ref" : "#/components/schemas/ReadinessStatus"
+          },
+          "updated" : {
+            "type" : "string",
+            "description" : "Date and time of last health and/or readiness update.",
+            "format" : "date-time"
+          },
+          "uri" : {
+            "type" : "string",
+            "format" : "uri",
+            "example" : "http://data-store.smpaas-platform-svcs.svc.cluster.local:8080"
+          },
+          "upstreamServices" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ServiceStatus"
+            }
+          }
+        },
+        "description" : "Status of the service and all upstream services"
+      },
+      "HealthStatus" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "example" : "ok",
+            "enum" : [ "ok", "failed", "unknown", "ok-forced", "failed-forced" ]
+          }
+        },
+        "description" : "Health status of the service"
+      },
+      "ReadinessStatus" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "example" : "ok",
+            "enum" : [ "ready", "not-ready", "unknown", "not-ready-forced" ]
+          }
+        },
+        "description" : "Readiness status of the service"
+      },
+      "Info" : {
+        "required" : [ "env", "status", "version" ],
+        "type" : "object",
+        "properties" : {
+          "version" : {
+            "$ref" : "#/components/schemas/Version"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ServiceStatus"
+          },
+          "env" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Env"
+            }
+          }
+        },
+        "description" : "Consolidated information for the service"
+      },
+      "Version" : {
+        "required" : [ "module", "version" ],
+        "type" : "object",
+        "properties" : {
+          "module" : {
+            "type" : "string",
+            "example" : "node"
+          },
+          "version" : {
+            "type" : "string",
+            "example" : "v11.12.0"
+          },
+          "dependencies" : {
+            "type" : "array",
+            "example" : [ {
+              "module" : "libc",
+              "version" : "v8.11.0"
+            } ],
+            "items" : {
+              "$ref" : "#/components/schemas/Version"
+            }
+          }
+        },
+        "description" : "Version information for all modules and components of the service including all dependencies"
+      },
+      "Env" : {
+        "required" : [ "name", "value" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "HOSTNAME"
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "data-store"
+          }
+        },
+        "description" : "Environment variable"
+      },
+      "Error" : {
+        "required" : [ "details", "message" ],
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string"
+          },
+          "details" : {
+            "type" : "string"
+          },
+          "recommendedActions" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "nestedErrors" : {
+            "type" : "string"
+          },
+          "errorSource" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "data" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Error information"
+      }
+    }
+  }
+}
