@@ -49,17 +49,17 @@ type Handler struct {
 	Logger *logrus.Logger
 }
 
-func (z *Handler) Init(appName string, appVersion string, instanceGUID string, instanceAddress string, appType string,
+func (z *Handler) Init(applicationName string, applicationVersion string, instanceGUID string, instanceAddress string, applicationType string,
 	logLevel string, debugLevel int, logAs string) {
 
 	z.ServiceStatus = ServiceStatus{
-		GUID: instanceGUID, Name: appName, Type: appType, URI: instanceAddress,
+		GUID: instanceGUID, Name: applicationName, Type: applicationType, URI: instanceAddress,
 		Health: HealthStatus{Status: HealthStatusOK}, Readiness: ReadinessStatus{Status: ReadinessStatusReady},
 		Updated: time.Now(),
 	}
 	z.LogLevel = LogLevel{logLevel, debugLevel, logAs}
 
-	z.Version.Dependencies = append(z.Version.Dependencies, Version{Module: appName, Version: appVersion})
+	z.Version.Dependencies = append(z.Version.Dependencies, Version{Module: applicationName, Version: applicationVersion})
 
 	z.ServiceStatus.mutexHealth.Lock()
 	defer z.ServiceStatus.mutexHealth.Unlock()
