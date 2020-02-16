@@ -79,3 +79,4 @@ func (z *Handler) Init(applicationName string, applicationVersion string, instan
 		"logLevel": z.LogLevel.Log, "debugLevel": z.LogLevel.Debug, "logAs": z.LogLevel.Format,
 	}).Infof("%s %s initialized", appName, appVersion)
 }
+

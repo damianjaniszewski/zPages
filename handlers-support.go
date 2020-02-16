@@ -18,7 +18,7 @@ func (z *Handler) SupportQuiesce(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-	z.setNotReady()
+	z.SetNotReadyForced()
 
 	out, _ := json.Marshal(z.ServiceStatus)
 	fmt.Fprintf(w, string(out))
@@ -36,7 +36,7 @@ func (z *Handler) SupportResume(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-	z.unsetNotReady()
+	z.UnsetNotReadyForced()
 
 	out, _ := json.Marshal(z.ServiceStatus)
 	fmt.Fprintf(w, string(out))
@@ -53,7 +53,7 @@ func (z *Handler) SupportFail(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-	z.setUnhealthy()
+	z.SetUnhealthyForced()
 
 	out, _ := json.Marshal(z.ServiceStatus)
 	fmt.Fprintf(w, string(out))
@@ -70,9 +70,9 @@ func (z *Handler) SupportQuit(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-	z.setNotReady()
+	z.SetNotReadyForced()
 	z.ShutdownChannel <- os.Interrupt
-	z.setUnhealthy()
+	z.SetUnhealthyForced()
 
 	out, _ := json.Marshal(z.ServiceStatus)
 	fmt.Fprintf(w, string(out))
@@ -89,13 +89,13 @@ func (z *Handler) SupportRestart(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-	z.setNotReady()
+	z.SetNotReadyForced()
 
 	log.WithFields(logrus.Fields{
 		"statusReady": z.ServiceStatus.statusReady, "statusNotReadyForced": z.ServiceStatus.statusNotReadyForced,
 	}).Warnf("%s SupportRestart: restarting...", appName)
 
-	z.unsetNotReady()
+	z.UnsetNotReadyForced()
 
 	log.WithFields(logrus.Fields{
 		"statusReady": z.ServiceStatus.statusReady, "statusNotReadyForced": z.ServiceStatus.statusNotReadyForced,
@@ -117,7 +117,29 @@ func (z *Handler) SupportCrash(w http.ResponseWriter, r *http.Request) {
 	log.Fatalf("%s SupportCrash: crashing...", appName)
 }
 
-func (z *Handler) setNotReady() {
+func (z *Handler) SetNotReady() {
+	z.ServiceStatus.mutexReady.Lock()
+	defer z.ServiceStatus.mutexReady.Unlock()
+
+	z.ServiceStatus.Readiness.Status = ReadinessStatusNotReady
+
+	z.ServiceStatus.statusReady = false
+	z.ServiceStatus.statusNotReadyForced = false
+	z.ServiceStatus.statusReadyForced = false
+}
+
+func (z *Handler) UnsetNotReady() {
+	z.ServiceStatus.mutexReady.Lock()
+	defer z.ServiceStatus.mutexReady.Unlock()
+
+	z.ServiceStatus.Readiness.Status = ReadinessStatusReady
+
+	z.ServiceStatus.statusReady = true
+	z.ServiceStatus.statusNotReadyForced = false
+	z.ServiceStatus.statusReadyForced = false
+}
+
+func (z *Handler) SetNotReadyForced() {
 	z.ServiceStatus.mutexReady.Lock()
 	defer z.ServiceStatus.mutexReady.Unlock()
 
@@ -127,7 +149,7 @@ func (z *Handler) setNotReady() {
 	z.ServiceStatus.statusReadyForced = false
 }
 
-func (z *Handler) unsetNotReady() {
+func (z *Handler) UnsetNotReadyForced() {
 	z.ServiceStatus.mutexReady.Lock()
 	defer z.ServiceStatus.mutexReady.Unlock()
 
@@ -137,7 +159,7 @@ func (z *Handler) unsetNotReady() {
 	z.ServiceStatus.statusReadyForced = false
 }
 
-func (z *Handler) setUnhealthy() {
+func (z *Handler) SetUnhealthyForced() {
 	z.ServiceStatus.mutexHealth.Lock()
 	defer z.ServiceStatus.mutexHealth.Unlock()
 

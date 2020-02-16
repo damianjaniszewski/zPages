@@ -16,9 +16,11 @@ func (z *Handler) Healthz(w http.ResponseWriter, r *http.Request) {
 	z.ServiceStatus.mutexHealth.Lock()
 	defer z.ServiceStatus.mutexHealth.Unlock()
 
-	log.WithFields(logrus.Fields{
-		"statusHealth": z.ServiceStatus.statusHealth, "statusNotHealthyForced": z.ServiceStatus.statusNotHealthyForced,
-	}).Debugf("%s Healthz: healthy: %v, forced not healthy: %v", appName, z.ServiceStatus.statusHealth, z.ServiceStatus.statusNotHealthyForced)
+	if z.LogLevel.Debug >= 4 {
+		log.WithFields(logrus.Fields{
+			"statusHealth": z.ServiceStatus.statusHealth, "statusNotHealthyForced": z.ServiceStatus.statusNotHealthyForced,
+		}).Debugf("%s Healthz: healthy: %v, forced not healthy: %v", appName, z.ServiceStatus.statusHealth, z.ServiceStatus.statusNotHealthyForced)
+	}
 
 	if z.ServiceStatus.statusNotHealthyForced == true {
 		// 501
@@ -47,9 +49,11 @@ func (z *Handler) Readyz(w http.ResponseWriter, r *http.Request) {
 	z.ServiceStatus.mutexReady.Lock()
 	defer z.ServiceStatus.mutexReady.Unlock()
 
-	log.WithFields(logrus.Fields{
-		"statusReady": z.ServiceStatus.statusReady, "statusNotReadyForced": z.ServiceStatus.statusNotReadyForced,
-	}).Debugf("%s Readyz: ready: %v, forced not ready: %v", appName, z.ServiceStatus.statusReady, z.ServiceStatus.statusNotReadyForced)
+	if z.LogLevel.Debug >= 4 {
+		log.WithFields(logrus.Fields{
+			"statusReady": z.ServiceStatus.statusReady, "statusNotReadyForced": z.ServiceStatus.statusNotReadyForced,
+		}).Debugf("%s Readyz: ready: %v, forced not ready: %v", appName, z.ServiceStatus.statusReady, z.ServiceStatus.statusNotReadyForced)
+	}
 
 	if z.ServiceStatus.statusNotReadyForced {
 		// 501
